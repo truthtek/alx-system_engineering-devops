@@ -1,1 +1,5 @@
-Hello World
+#!/bin/bash
+
+# This is a simple script that prints "Hello, World" followed by a newline
+echo "Hello, World"
+
