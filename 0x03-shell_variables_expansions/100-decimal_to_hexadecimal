@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "ibase=10; obase=16; $DECIMAL" | bc
+python3 -c "print(hex(int('$DECIMAL'))[2:].upper())"
