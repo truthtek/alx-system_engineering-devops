@@ -1,2 +1,2 @@
 #!/bin/bash
-grep -n '' | grep -E ':1$|:[13579]$' | cut -d: -f2-
+grep -n '' | grep -E ':1$|:[13579]$' | cut -d: -f2- | grep -v "^$"
