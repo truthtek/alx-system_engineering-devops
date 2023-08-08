@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "Local Variables:"
+compgen -v
+
+echo -e "\nEnvironment Variables:"
+compgen -e
+
+echo -e "\nFunctions:"
+compgen -A function
