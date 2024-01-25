@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Bash script to display visitor IP along with HTTP status code from Apache log file using awk
+
+# Using awk to extract and format the information
+awk '{print $1, $9}' apache-access.log
