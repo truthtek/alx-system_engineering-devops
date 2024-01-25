@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
-# Bash script that displays the content of the current directory in a list format, showing only the part of the name after the first dash
-
-# Using a for loop to iterate through files in the current directory
-for file in *; do
-    # Checking if the file is not a hidden file
-    if [[ ! $file =~ ^\..* ]]; then
-        # Extracting the part of the name after the first dash
-        name_part=$(echo "$file" | cut -d'-' -f2-)
-        echo "- $name_part"
-    fi
+#  Bash script that displays: (1) The dir_content of the current directory (2) In a command format (3) Where only the part of the name after the first dash is displayed
+dir_content=0
+command=$(ls)
+for dir_content in $command
+do
+    echo "$dir_content" | cut -d "-" -f2
 done
