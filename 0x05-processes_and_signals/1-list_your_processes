@@ -1,7 +1,3 @@
-#!/bin/bash
-
-# Display header
-echo "PID  PPID   USER     COMMAND"
-
-# Use ps command to display the processes with the desired information
-ps axo pid,ppid,user,cmd --forest
+#!/usr/bin/env bash
+# Bash script that displays a list of currently runnning process
+ps faxu
