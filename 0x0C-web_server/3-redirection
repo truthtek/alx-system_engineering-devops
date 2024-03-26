@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# This script configures Nginx to redirect /redirect_me to another page
+
+# Install Nginx if it's not already installed
+apt-get update
+apt-get install -y nginx
+
+# Create a configuration file for the redirection
+echo "
+server {
+    listen 80;
+    listen [::]:80;
+    server_name _;
+    return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+}" > /etc/nginx/sites-available/default
+
+# Enable the new configuration
+ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Restart Nginx
+service nginx restart
