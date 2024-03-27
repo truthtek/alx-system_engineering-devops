@@ -1,4 +1,16 @@
 #!/usr/bin/env bash
-# script to initialize server apache
-/etc/init.d/apache2 start
+
+# Check if Apache is running
+if ! systemctl is-active --quiet apache2; then
+    echo "Starting Apache..."
+    systemctl start apache2
+    echo "Apache started successfully."
+else
+    echo "Apache is already running."
+fi
+
+# Create index.html with "Hello Holberton"
 echo "Hello Holberton" > /var/www/html/index.html
+
+# Print success message
+echo "Apache is running"
