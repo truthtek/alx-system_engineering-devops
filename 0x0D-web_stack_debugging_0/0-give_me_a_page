@@ -13,4 +13,4 @@ fi
 echo "Hello Holberton" > /var/www/html/index.html
 
 # Print success message
-echo "Apache is running"
+echo ["Apache is running"]
