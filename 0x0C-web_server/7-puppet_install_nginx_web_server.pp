@@ -1,47 +1,24 @@
-# Install Nginx package
-package { 'nginx':
-  ensure => installed,
+# Script to install nginx using puppet
+
+package {'nginx':
+  ensure => 'present',
 }
 
-# Configure Nginx to return "Hello World!"
-file { '/var/www/html/index.nginx-debian.html':
-  ensure  => present,
-  content => "Hello World!\n",
-  require => Package['nginx'],
+exec {'install':
+  command  => 'sudo apt-get update ; sudo apt-get -y install nginx',
+  provider => shell,
 }
 
-# Configure Nginx for redirection
-file { '/etc/nginx/sites-available/default':
-  ensure  => present,
-  content => @("EOF"/)
-    server {
-        listen 80;
-        server_name _;
-
-        location / {
-            root /var/www/html;
-            index index.nginx-debian.html;
-        }
-
-        location /redirect_me {
-            return 301 https://www.example.com;
-        }
-    }
-    | EOF
-  require => Package['nginx'],
-  notify  => Service['nginx'],
+exec {'Holberton':
+  command  => 'echo "Holberton School" | sudo tee /var/www/html/index.html',
+  provider => shell,
 }
 
-# Enable the new Nginx configuration
-file { '/etc/nginx/sites-enabled/default':
-  ensure  => link,
-  target  => '/etc/nginx/sites-available/default',
-  require => File['/etc/nginx/sites-available/default'],
-  notify  => Service['nginx'],
+exec {'sudo sed -i "s/listen 80 default_server;/listen 80 default_server;\\n\\tlocation \/redirect_me {\\n\\t\\treturn 301 https:\/\/www.youtube.com\/;\\n\\t}/" /etc/nginx/sites-available/default':
+  provider => shell,
 }
 
-# Ensure Nginx service is running
-service { 'nginx':
-  ensure => running,
-  enable => true,
+exec {'run':
+  command  => 'sudo service nginx restart',
+  provider => shell,
 }
