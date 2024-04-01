@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Install and configure HAProxy
+
+# Add HAProxy repository
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository ppa:vbernat/haproxy-1.8
+
+# Install HAProxy
+sudo apt-get update
+sudo apt-get install -y haproxy
+
+# Create HAProxy configuration file
+cat << EOF > /etc/haproxy/haproxy.cfg
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
+
+frontend http-in
+    bind *:80
+    default_backend servers
+
+backend servers
+    balance roundrobin
+    server web-01 [STUDENT_ID]-web-01:80 check
+    server web-02 [STUDENT_ID]-web-02:80 check
+EOF
+
+# Replace [STUDENT_ID] with your student ID
+sed -i "s/\[STUDENT_ID\]/$STUDENT_ID/g" /etc/haproxy/haproxy.cfg
+
+# Configure HAProxy as a service
+sudo ln -sf /usr/local/sbin/haproxy-systemd-wrapper /etc/haproxy
+sudo ln -sf /etc/haproxy /etc/rsyslog.d/haproxy.conf
+
+# Start HAProxy service
+sudo service haproxy start
