@@ -37,12 +37,12 @@ frontend http-in
 
 backend servers
     balance roundrobin
-    server web-01 [STUDENT_ID]-web-01:80 check
-    server web-02 [STUDENT_ID]-web-02:80 check
+    server web-01 [497515]-web-01:80 check
+    server web-02 [497515]-web-02:80 check
 EOF
 
 # Replace [STUDENT_ID] with your student ID
-sed -i "s/\[STUDENT_ID\]/$STUDENT_ID/g" /etc/haproxy/haproxy.cfg
+sed -i "s/\[497515\]/$497515/g" /etc/haproxy/haproxy.cfg
 
 # Configure HAProxy as a service
 sudo ln -sf /usr/local/sbin/haproxy-systemd-wrapper /etc/haproxy
