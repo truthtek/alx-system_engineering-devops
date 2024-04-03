@@ -1,29 +1,15 @@
-# Install Nginx
-package { 'nginx':
-  ensure => installed,
+# custom http header response NGiNX
+exec {'update':
+  command => '/usr/bin/apt-get update',
 }
-
-# Get the hostname of the server
-$hostname = inline_epp('<%=  @facts["hostname"] %>')
-
-# Configure the custom HTTP header
-file { '/etc/nginx/sites-available/default':
-  content => "server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name _;
-    add_header X-Served-By ${hostname};
-    location / {
-      root /var/www/html;
-      index index.html index.htm;
-    }
-  }",
-  notify  => Service['nginx'],
-  require => Package['nginx'],
+-> package {'nginx':
+  ensure => 'present',
 }
-
-# Ensure Nginx service is running
-service { 'nginx':
-  ensure => running,
-  enable => true,
+-> file_line { 'http_header':
+  path  => '/etc/nginx/nginx.conf',
+  match => 'http {',
+  line  => "http {\n\tadd_header X-Served-By \"${hostname}\";",
+}
+-> exec {'run2':
+  command => '/usr/sbin/service nginx start',
 }
