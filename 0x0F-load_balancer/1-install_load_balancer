@@ -37,8 +37,8 @@ frontend http-in
 
 backend servers
     balance roundrobin
-    server web-01 [497515]-web-01:80 check
-    server web-02 [497515]-web-02:80 check
+    server web-01 [34.229.67.107]-web-01:80 check
+    server web-02 [107.21.57.144]-web-02:80 check
 EOF
 
 # Replace [STUDENT_ID] with your student ID
