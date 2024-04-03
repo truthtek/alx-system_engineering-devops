@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
-#configures a new Ubuntu machine nginx
-apt-get update
-apt-get install software-properties-common -y
-add-apt-repository ppa:vbernat/haproxy-1.7 -y
-apt-get update
-apt-get install haproxy=1.7.\* -y
-echo "frontend web-front
-        bind *:80
-        default_backend web-backend
+# This script configures HAProxy to distribute requests to two web servers
 
-backend web-backend
-        balance roundrobin
-        server web1 54.164.145.199:80 check
-        server web2 34.229.67.107:80 check
-" | sudo tee -a /etc/haproxy/haproxy.cfg
-sudo service haproxy start
+# Install HAProxy if it's not already installed
+sudo apt-get update
+sudo apt-get install -y haproxy
+
+# Configure HAProxy
+echo "
+frontend http_front
+   bind *:80
+   stats uri /haproxy?stats
+   default_backend http_back
+
+backend http_back
+   balance roundrobin
+   server web01 [54.164.145.199]-web-01:80 check
+   server web02 [34.229.67.107]-web-02:80 check
+" | sudo tee /etc/haproxy/haproxy.cfg
+
+# Restart HAProxy to apply the changes
+sudo systemctl restart haproxy
