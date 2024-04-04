@@ -1,35 +1,30 @@
 #!/usr/bin/env bash
-# Displays information about subdomains for a given domain
+# script to report information about server domains
+# shellcheck disable=SC2086
+check_domain() {
+	# awk will use record seperator of space
+	# space sperated list of sub domains
+	SUBDOMAINS='www lb-01 web-01 web-02'
 
-# Function to retrieve and format subdomain information
-get_subdomain_info() {
-    local domain="$1"
-    local subdomain="$2"
-    local dig_output
-    local record_type
-    local destination
-
-    dig_output=$(dig "$subdomain.$domain" +short)
-    record_type=$(echo "$dig_output" | awk 'NR==1 {print $4}')
-    destination=$(echo "$dig_output" | awk 'NR==1 {print $5}')
-
-    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+	if [ -z "$1" ]; then
+		exit
+	fi
+	# no sub domain specified, do all
+	if [ -z "$2" ]; then
+		echo "$SUBDOMAINS" | awk -v domain="$1"\
+		'BEGIN { RS=" " }
+		{split($0,ARR," ");
+		cmd = "dig " ARR[1]"."domain " | grep -A1 \"ANSWER SECTION:\" | tail -n1";
+		system(cmd)
+		close(cmd)}' | awk\
+		'{
+		split($0, DOMS, ".");
+		print "The subdomain " DOMS[1] " is a " $4 " record and points to " $5}'
+	else
+		dig "$2.$1" | grep -A1 "ANSWER SECTION:" | tail -n1 | awk\
+		'{
+		split($0, DOMS, ".");
+		print "The subdomain " DOMS[1] " is a " $4 " record and points to " $5}'
+	fi
 }
-
-# Check if domain parameter is provided
-if [ -z "$1" ]; then
-    echo "Usage: $0 domain [subdomain]"
-    exit 1
-fi
-
-domain="$1"
-
-# If no subdomain is provided, display information for default subdomains
-if [ -z "$2" ]; then
-    for subdomain in www lb-01 web-01 web-02; do
-        get_subdomain_info "$domain" "$subdomain"
-    done
-else
-    subdomain="$2"
-    get_subdomain_info "$domain" "$subdomain"
-fi
+check_domain "$1" "$2"
