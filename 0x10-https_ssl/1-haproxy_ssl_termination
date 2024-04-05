@@ -51,5 +51,5 @@ frontend www-https
 backend web_back
 	redirect scheme https if !{ ssl_fc }
 	balance roundrobin
-	server 314-web-01 35.231.59.48:80 check
-	server 314-web-02 35.237.55.203:80 check
+	server 497515-web-01 54.164.145.199:80 check
+	server 497515-web-02 34.229.67.107:80 check
