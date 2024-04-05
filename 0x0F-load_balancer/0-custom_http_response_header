@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
-
-# configure web-02 to be identical to web-01, add a custom Nginx response header
-
+# This script configures a new Ubuntu machine to be identical to web-01 and adds a custom Nginx header
 sudo apt-get -y update
 sudo apt-get -y install nginx
-
 HOSTNAME=$(hostname)
 sudo sed -i "37i \tadd_header X-Served-By $HOSTNAME;" /etc/nginx/sites-available/default
-
 sudo service nginx restart
