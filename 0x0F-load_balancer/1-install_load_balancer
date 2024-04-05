@@ -1,22 +1,14 @@
 #!/usr/bin/env bash
-# This script configures HAProxy to distribute requests to two web servers
+# Install and configure HAproxy on your lb-01 server
+sudo apt-get update -y
+sudo apt-get install haproxy -y
 
-# Install HAProxy if it's not already installed
-sudo apt-get update
-sudo apt-get install -y haproxy
+#sudo sed -i "s|ENABLED=0|ENABLED=1|g" /etc/default/haproxy
+sudo sed -i "\$aENABLED=1\n" /etc/default/haproxy
 
-# Configure HAProxy
-echo "
-frontend http_front
-   bind *:80
-   stats uri /haproxy?stats
-   default_backend http_back
+FRONT_END="\\\nfrontend http_front\n\tbind *:80\n\tmode http\n\tdefault_backend http_back\n"
 
-backend http_back
-   balance roundrobin
-   server 497515-web-01 54.164.145.199:80 check
-   server 497515-web-02 34.229.67.107:80 check
-" | sudo tee /etc/haproxy/haproxy.cfg
-
-# Restart HAProxy to apply the changes
-sudo systemctl restart haproxy
+BACK_END="backend http_back\n\tbalance roundrobin\n\tserver 497515-web-01 54.164.145.199:80 check\n\tserver 497515-web-02 34.229.67.107:80 check\n"
+sudo sed -i "\$a$FRONT_END\n$BACK_END" /etc/haproxy/haproxy.cfg
+sudo service haproxy restart
+ubuntu@gc-497515-lb-01-1072157144:
