@@ -1,4 +1,4 @@
-# HAProxy config file for redirecting all http traffic to https
+
 global
 	log /dev/log	local0
 	log /dev/log	local1 notice
@@ -9,13 +9,8 @@ global
 	group haproxy
 	daemon
 
-	# Max connections
-	maxconn 2048
-	# Configure max size of temporary DHE keys that are generated
-	tune.ssl.default-dh-param 2048
-
 	# Default SSL material locations
-	ca-base /etc/haproxy/certs
+	ca-base /etc/ssl/certs
 	crt-base /etc/ssl/private
 
 	# Default ciphers to use on SSL-enabled listening sockets.
@@ -31,10 +26,7 @@ defaults
 	mode	http
 	option	httplog
 	option	dontlognull
-        # Ensure forwarded request includes client's IP
 	option forwardfor
-	# Reduce latency between HAProxy and users by closing conns
-	option http-server-close
         timeout connect 5000
         timeout client  50000
         timeout server  50000
@@ -46,21 +38,19 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-frontend www-frontend
-	bind *:80
-	bind *:443 ssl crt /etc/haproxy/certs/bennettdixon.online.pem
+frontend www-http
+	 bind *:80
+	 reqadd X-Forwarded-Proto:\ http
+	 redirect scheme https code 301 if !{ ssl_fc }
+	 default_backend web_back
 
-	redirect scheme https code 301 if !{ ssl_fc }
-	# if configuration for certbot pass to certbot backend
-	acl letsencrypt-acl path_beg /.well-known/acme-challenge/
-	use_backend le-certbot-backend if letsencrypt-acl
+frontend www-https
+	 bind *:443 ssl crt /etc/haproxy/ssl/www.beckers.website.pem
+	 reqadd X-Forwarded-Proto:\ https
+	 default_backend web_back
 
-	default_backend www-backend
-
-backend le-certbot-backend
-	server letsencrypt 127.0.0.1:8888
-
-backend www-backend
+backend web_back
+	redirect scheme https if !{ ssl_fc }
 	balance roundrobin
-        server 497515-web-01 54.164.145.199:80
-        server 497515-web-01 34.229.67.107:80
+	server 314-web-01 35.231.59.48:80 check
+	server 314-web-02 35.237.55.203:80 check
