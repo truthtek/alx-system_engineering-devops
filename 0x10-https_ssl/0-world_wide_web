@@ -1,9 +1,4 @@
-
 #!/usr/bin/env bash
-# Configure your domain zone so that the subdomain www points to your...
-# ...load-balancer IP (lb-01). and write a Bash script that will display...
-# ...information about subdomains
-
 
 domain=$1
 
@@ -15,5 +10,5 @@ fi
 
 for sub in "${subdomain[@]}"; do
     echo -n "The subdomain $sub"
-    dig "$sub.$domain" | grep -A1 'ANSWER SECTION:' | tail -n -1 | awk '{ print " is a " $4 " record and points to " $5}'
+    dig +short "$sub.$domain" | awk '{ print " points to " $1}'
 done
