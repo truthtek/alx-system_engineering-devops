@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 
+# Define a function to perform the DNS lookup and print the result
+function print_dns_info {
+    local sub=$1
+    local domain=$2
+    echo -n "The subdomain $sub"
+    dig "$sub.$domain" +noall +answer | awk '{ print " is a " $4 " record and points to " $5}'
+}
+
+# Get the domain from the first argument
 domain=$1
 
+# Check if a specific subdomain was provided
 if [ "$#" -eq 2 ]; then
-    subdomain=$2
+    # If so, just print the info for that subdomain
+    print_dns_info $2 $domain
 else
-    subdomain=("www" "lb-01" "web-01" "web-02")
+    # If not, print the info for the default subdomains
+    subdomains=("www" "lb-01" "web-01" "web-02")
+    for sub in "${subdomains[@]}"; do
+        print_dns_info $sub $domain
+    done
 fi
-
-for sub in "${subdomain[@]}"; do
-    echo -n "The subdomain $sub"
-    dig +short "$sub.$domain" | awk '{ print " points to " $1}'
-done
