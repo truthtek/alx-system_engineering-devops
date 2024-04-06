@@ -1,4 +1,3 @@
-
 global
     log 127.0.0.1 local0 notice
     maxconn 2048
@@ -33,8 +32,8 @@ frontend www-https
 
 backend www-backend
 	redirect scheme https if !{ ssl_fc }
-	server www-1 35.190.184.163:80 check
-	server www-2 35.185.88.238:80 check
+	server 497515-web-01 54.164.145.199:80 check
+	server 497515-web-02 34.229.67.107:80 check
 
 backend letsencrypt-backend
 	server letsencrypt 127.0.0.1:54321
