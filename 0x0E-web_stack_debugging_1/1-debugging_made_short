@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This script ensures that Nginx is running and listening on port 80
-apt-get update
-apt-get install -y nginx
+# Nginx must be running, and listening on port 80 of all the servers active IPv4 IPs
+rm /etc/nginx/sites-enabled/default
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 service nginx stop
