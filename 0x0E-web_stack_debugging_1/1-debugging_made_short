@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installing new server to serve content
-./0-nginx_likes_port_80
-echo "hi" > /var/run/nginx.pid
-echo "hi" > /run/nginx.pid
+# This script ensures that Nginx is running and listening on port 80
+apt-get update
+apt-get install -y nginx
+service nginx start
