@@ -1,4 +1,15 @@
-ufw allow 80/tcp
-ufw allow 443/tcp
-ufw allow 22/tcp
-ufw enable
+# Allow incoming SSH traffic (port 22)
+sudo ufw allow 22/tcp
+
+# Allow incoming HTTP traffic (port 80)
+sudo ufw allow 80/tcp
+
+# Allow incoming HTTPS traffic (port 443)
+sudo ufw allow 443/tcp
+
+# Redirect incoming traffic on port 8080 to port 80
+sudo ufw allow 8080/tcp
+sudo ufw redirect 8080 to 80/tcp
+
+# Enable the firewall
+sudo ufw enable
