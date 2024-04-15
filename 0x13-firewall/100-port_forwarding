@@ -1,0 +1,21 @@
+# Set the default policy to deny incoming traffic
+sudo ufw default deny incoming
+
+# Set the default policy to allow outgoing traffic
+sudo ufw default allow outgoing
+
+# Allow incoming TCP traffic on port 22 (SSH)
+sudo ufw allow 22/tcp
+
+# Allow incoming TCP traffic on port 443 (HTTPS)
+sudo ufw allow 443/tcp
+
+# Allow incoming TCP traffic on port 80 (HTTP)
+sudo ufw allow 80/tcp
+
+# Redirect incoming TCP traffic on port 8080 to port 80
+sudo ufw allow 8080/tcp
+sudo ufw redirect 8080 to 80/tcp
+
+# Enable the firewall
+sudo ufw enable
