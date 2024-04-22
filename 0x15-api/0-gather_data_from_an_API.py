@@ -1,31 +1,37 @@
 #!/usr/bin/python3
-import requests
-import sys
 
-def main():
-   if len(sys.argv) < 2:
-       print("Usage: python3 0-gather_data_from_an_API.py <employee_id>")
-       return
+"""
+Python script that, using a REST API, for a given employee ID,
+returns information about his/her TODO list progress.
+"""
 
-   employee_id = int(sys.argv[1])
-   url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-   response = requests.get(url)
+from requests import get
+from sys import argv
 
-   if response.status_code == 200:
-       employee_data = response.json()
-       name = employee_data.get("name")
-       todo_url = f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
-       todo_response = requests.get(todo_url)
-       if todo_response.status_code == 200:
-           todo_data = todo_response.json()
-           total_tasks = len(todo_data)
-           done_tasks = sum(1 for task in todo_data if task.get("completed"))
-           print(f"Employee {name} is done with tasks({done_tasks}/{total_tasks}):")
-           for task in todo_data:
-               if task.get("completed"):
-                   print(f"\t {task.get('title')}")
-   else:
-       print("Failed to retrieve employee data.")
 
 if __name__ == "__main__":
-   main()
+    response = get('https://jsonplaceholder.typicode.com/todos/')
+    data = response.json()
+    completed = 0
+    total = 0
+    tasks = []
+    response2 = get('https://jsonplaceholder.typicode.com/users')
+    data2 = response2.json()
+
+    for i in data2:
+        if i.get('id') == int(argv[1]):
+            employee = i.get('name')
+
+    for i in data:
+        if i.get('userId') == int(argv[1]):
+            total += 1
+
+            if i.get('completed') is True:
+                completed += 1
+                tasks.append(i.get('title'))
+
+    print("Employee {} is done with tasks({}/{}):".format(employee, completed,
+                                                          total))
+
+    for i in tasks:
+        print("\t {}".format(i))
