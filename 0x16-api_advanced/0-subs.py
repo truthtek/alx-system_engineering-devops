@@ -9,7 +9,7 @@ import requests
 def number_of_subscribers(subreddit):
     """
     Function that queries the Reddit API
-    - If not a valid subreddit, return 0.
+    - If not a valid subreddit, return -1.
     """
     req = requests.get(
         "https://www.reddit.com/r/{}/about.json".format(subreddit),
@@ -17,6 +17,19 @@ def number_of_subscribers(subreddit):
     )
 
     if req.status_code == 200:
-        return req.json().get("data").get("subscribers")
+        data = req.json().get("data")
+        if data:
+            return data.get("subscribers", 0)
+        else:
+            return -1  # Subreddit does not exist
     else:
-        return 0
+        return -1  # Request failed
+
+# Example usage:
+subreddit_name = "example_subreddit"
+subscribers = number_of_subscribers(subreddit_name)
+if subscribers == -1:
+    print(f"The subreddit '{subreddit_name}' does not exist or could not be accessed.")
+else:
+    print(f"The subreddit '{subreddit_name}' has {subscribers} subscribers.")
+
