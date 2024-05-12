@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
-# Bash script that displays information about each user in /etc/passwd using while loop + IFS
-
-# Using a while loop to read each line from /etc/passwd
-while IFS=: read -r username _ userid groupid _ home_dir shell; do
-    # Extracting additional information from the /etc/passwd file
-    user_info=$(grep "^$username:" /etc/passwd | cut -d: -f5)
-
-    # Displaying information about each user
-    echo "The user $username is part of the $groupid gang,"
-    echo "lives in $home_dir and rides $shell."
-    echo "User ID's place is protected by the passcode $userid, more info about the user here: $user_info"
-    echo "---------------------------------------------"
+# Story of /etc/passwd
+ISF=:
+while read -r USERNAME PASSWORD USER_ID GROUP_ID USER_ID_INFO HOME_DIRECTORY COMMAND_SHELL
+do
+	echo "The user $USERNAME is part of the GROUP_ID gang, lives in $HOME_DIRECTORY and rides $COMMAND/SHELL. $USER ID's place is protected by the passcode $PASSWORD, more info about the user here: $USER ID INFO"
 done < /etc/passwd
